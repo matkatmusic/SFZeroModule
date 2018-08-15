@@ -19,7 +19,9 @@ namespace sfzero
         virtual ~SF2Sound();
         
         void loadRegions() override;
-        void loadSamples(juce::AudioFormatManager *formatManager, double *progressVar = nullptr, juce::Thread *thread = nullptr) override;
+        void loadSamples(juce::AudioFormatManager& formatManager,
+                         double *progressVar = nullptr,
+                         juce::Thread *thread = nullptr) override;
         
         struct Preset
         {

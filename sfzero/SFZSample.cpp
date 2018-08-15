@@ -7,9 +7,10 @@
 #include "SFZSample.h"
 #include "SFZDebug.h"
 
-bool sfzero::Sample::load(juce::AudioFormatManager *formatManager)
+bool sfzero::Sample::load(juce::AudioFormatManager &formatManager)
 {
-    juce::AudioFormatReader *reader = formatManager->createReaderFor(file_);
+    //juce::AudioFormatReader *reader = formatManager->createReaderFor(file_);
+    juce::ScopedPointer<juce::AudioFormatReader> reader( formatManager.createReaderFor(file_) );
     
     if (reader == nullptr)
     {
@@ -31,28 +32,39 @@ bool sfzero::Sample::load(juce::AudioFormatManager *formatManager)
         loopStart_ = metadata->getValue("Loop0Start", "0").getLargeIntValue();
         loopEnd_ = metadata->getValue("Loop0End", "0").getLargeIntValue();
     }
-    delete reader;
+    //delete reader;
     return true;
 }
 
-sfzero::Sample::~Sample() { delete buffer_; }
+//sfzero::Sample::~Sample() { delete buffer_; }
 
 juce::String sfzero::Sample::getShortName() { return (file_.getFileName()); }
 
 void sfzero::Sample::setBuffer(juce::AudioSampleBuffer *newBuffer)
 {
     buffer_ = newBuffer;
-    sampleLength_ = buffer_->getNumSamples();
+    if( newBuffer )
+    {
+        sampleLength_ = buffer_->getNumSamples();
+    }
+    else
+    {
+        sampleLength_ = 0;
+    }
 }
 
 juce::AudioSampleBuffer *sfzero::Sample::detachBuffer()
 {
-    juce::AudioSampleBuffer *result = buffer_;
-    buffer_ = nullptr;
-    return result;
+//    juce::AudioSampleBuffer *result = buffer_;
+//    buffer_ = nullptr;
+//    return result;
+    return buffer_.release();
 }
 
-juce::String sfzero::Sample::dump() { return file_.getFullPathName() + "\n"; }
+juce::String sfzero::Sample::getSampleFullPath()
+{
+    return file_.getFullPathName() + "\n";
+}
 
 #ifdef JUCE_DEBUG
 void sfzero::Sample::checkIfZeroed(const char *where)

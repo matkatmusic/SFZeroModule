@@ -54,7 +54,7 @@ void sfzero::SF2Sound::loadRegions()
     useSubsound(0);
 }
 
-void sfzero::SF2Sound::loadSamples(juce::AudioFormatManager * /*formatManager*/, double *progressVar, juce::Thread *thread)
+void sfzero::SF2Sound::loadSamples(juce::AudioFormatManager& /*formatManager*/, double *progressVar, juce::Thread *thread)
 {
     sfzero::SF2Reader reader(this, getFile());
     juce::AudioSampleBuffer *buffer = reader.readSamples(progressVar, thread);

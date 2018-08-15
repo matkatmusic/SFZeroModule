@@ -78,7 +78,7 @@ void sfzero::Sound::loadRegions()
     reader.read(file_);
 }
 
-void sfzero::Sound::loadSamples(juce::AudioFormatManager *formatManager, double *progressVar, juce::Thread *thread)
+void sfzero::Sound::loadSamples(juce::AudioFormatManager& formatManager, double *progressVar, juce::Thread *thread)
 {
     if (progressVar)
     {
@@ -184,7 +184,7 @@ juce::String sfzero::Sound::dump()
         info << samples_.size() << " samples: \n";
         for (juce::HashMap<juce::String, sfzero::Sample *>::Iterator i(samples_); i.next();)
         {
-            info << i.getValue()->dump();
+            info << i.getValue()->getSampleFullPath();
         }
     }
     else

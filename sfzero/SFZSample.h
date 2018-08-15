@@ -11,33 +11,32 @@
 
 namespace sfzero
 {
-    
     class Sample
     {
     public:
         explicit Sample(const juce::File &fileIn) :
         file_(fileIn),
-        buffer_(nullptr),
-        sampleRate_(0),
-        sampleLength_(0),
-        loopStart_(0),
-        loopEnd_(0)
+        buffer_(nullptr)//,
+//        sampleRate_(0),
+//        sampleLength_(0),
+//        loopStart_(0),
+//        loopEnd_(0)
         {
             
         }
         
         explicit Sample(double sampleRateIn) :
         buffer_(nullptr),
-        sampleRate_(sampleRateIn),
-        sampleLength_(0),
-        loopStart_(0),
-        loopEnd_(0)
+        sampleRate_(sampleRateIn)//,
+//        sampleLength_(0),
+//        loopStart_(0),
+//        loopEnd_(0)
         {
             
         }
-        virtual ~Sample();
+        virtual ~Sample() {}
         
-        bool load(juce::AudioFormatManager *formatManager);
+        bool load(juce::AudioFormatManager &formatManager);
         
         juce::File getFile() { return (file_); }
         juce::AudioSampleBuffer *getBuffer() { return (buffer_); }
@@ -45,7 +44,9 @@ namespace sfzero
         juce::String getShortName();
         void setBuffer(juce::AudioSampleBuffer *newBuffer);
         juce::AudioSampleBuffer *detachBuffer();
-        juce::String dump();
+        
+        ///returns the sample's full path name
+        juce::String getSampleFullPath();
         juce::uint64 getSampleLength() const { return sampleLength_; }
         juce::uint64 getLoopStart() const { return loopStart_; }
         juce::uint64 getLoopEnd() const { return loopEnd_; }
@@ -56,9 +57,10 @@ namespace sfzero
         
     private:
         juce::File file_;
-        juce::AudioSampleBuffer *buffer_;
-        double sampleRate_;
-        juce::uint64 sampleLength_, loopStart_, loopEnd_;
+        //juce::AudioSampleBuffer *buffer_;
+        juce::ScopedPointer<juce::AudioSampleBuffer> buffer_;
+        double sampleRate_{0};
+        juce::uint64 sampleLength_{0}, loopStart_{0}, loopEnd_{0};
         
         JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(Sample)
     };

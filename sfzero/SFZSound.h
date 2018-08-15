@@ -31,7 +31,8 @@ namespace sfzero
         void addUnsupportedOpcode(const juce::String &opcode);
         
         virtual void loadRegions();
-        virtual void loadSamples(juce::AudioFormatManager *formatManager, double *progressVar = nullptr,
+        virtual void loadSamples(juce::AudioFormatManager& formatManager,
+                                 double *progressVar = nullptr,
                                  juce::Thread *thread = nullptr);
         
         Region *getRegionFor(int note, int velocity, Region::Trigger trigger = Region::attack);
