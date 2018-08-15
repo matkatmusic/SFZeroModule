@@ -11,14 +11,14 @@
 
 void sfzero::dbgprintf(const char *msg, ...)
 {
-  va_list args;
-
-  va_start(args, msg);
-
-  char output[256];
-  vsnprintf(output, 256, msg, args);
-
-  va_end(args);
+    va_list args;
+    
+    va_start(args, msg);
+    
+    char output[256];
+    vsnprintf(output, 256, msg, args);
+    
+    va_end(args);
 }
 
 #endif // JUCE_DEBUG

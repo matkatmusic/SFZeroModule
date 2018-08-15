@@ -68,55 +68,55 @@ void sfzero::SF2::shdr::readFrom(juce::InputStream *file)
 }
 
 sfzero::SF2::Hydra::Hydra()
-    : phdrItems(nullptr), pbagItems(nullptr), pmodItems(nullptr), pgenItems(nullptr), instItems(nullptr), ibagItems(nullptr),
-      imodItems(nullptr), igenItems(nullptr), shdrItems(nullptr), phdrNumItems(0), pbagNumItems(0), pmodNumItems(0), pgenNumItems(0), 
-      instNumItems(0), ibagNumItems(0), imodNumItems(0), igenNumItems(0), shdrNumItems(0)
-  {
+: phdrItems(nullptr), pbagItems(nullptr), pmodItems(nullptr), pgenItems(nullptr), instItems(nullptr), ibagItems(nullptr),
+imodItems(nullptr), igenItems(nullptr), shdrItems(nullptr), phdrNumItems(0), pbagNumItems(0), pmodNumItems(0), pgenNumItems(0), 
+instNumItems(0), ibagNumItems(0), imodNumItems(0), igenNumItems(0), shdrNumItems(0)
+{
 }
 sfzero::SF2::Hydra::~Hydra()
 {
-  delete phdrItems;
-  delete pbagItems;
-  delete pmodItems;
-  delete pgenItems;
-  delete instItems;
-  delete ibagItems;
-  delete imodItems;
-  delete igenItems;
-  delete shdrItems;
+    delete phdrItems;
+    delete pbagItems;
+    delete pmodItems;
+    delete pgenItems;
+    delete instItems;
+    delete ibagItems;
+    delete imodItems;
+    delete igenItems;
+    delete shdrItems;
 }
 
 void sfzero::SF2::Hydra::readFrom(juce::InputStream *file, juce::int64 pdtaChunkEnd)
 {
-  int i, numItems;
-
+    int i, numItems;
+    
 #define HandleChunk(chunkName)                                                                                                   \
-  if (FourCCEquals(chunk.id, #chunkName))                                                                                        \
-  {                                                                                                                              \
-    numItems = chunk.size / SF2::chunkName::sizeInFile;                                                                          \
-    chunkName##NumItems = numItems;                                                                                              \
-    chunkName##Items = new SF2::chunkName[numItems];                                                                             \
-    for (i = 0; i < numItems; ++i)                                                                                               \
-    {                                                                                                                            \
-      chunkName##Items[i].readFrom(file);                                                                                        \
-    }                                                                                                                            \
-  }                                                                                                                              \
-  else
-
-  while (file->getPosition() < pdtaChunkEnd)
-  {
-    sfzero::RIFFChunk chunk;
-    chunk.readFrom(file);
-
-    HandleChunk(phdr) HandleChunk(pbag) HandleChunk(pmod) HandleChunk(pgen) HandleChunk(inst) HandleChunk(ibag) HandleChunk(imod)
-        HandleChunk(igen) HandleChunk(shdr)
+if (FourCCEquals(chunk.id, #chunkName))                                                                                        \
+{                                                                                                                              \
+numItems = chunk.size / SF2::chunkName::sizeInFile;                                                                          \
+chunkName##NumItems = numItems;                                                                                              \
+chunkName##Items = new SF2::chunkName[numItems];                                                                             \
+for (i = 0; i < numItems; ++i)                                                                                               \
+{                                                                                                                            \
+chunkName##Items[i].readFrom(file);                                                                                        \
+}                                                                                                                            \
+}                                                                                                                              \
+else
+    
+    while (file->getPosition() < pdtaChunkEnd)
     {
+        sfzero::RIFFChunk chunk;
+        chunk.readFrom(file);
+        
+        HandleChunk(phdr) HandleChunk(pbag) HandleChunk(pmod) HandleChunk(pgen) HandleChunk(inst) HandleChunk(ibag) HandleChunk(imod)
+        HandleChunk(igen) HandleChunk(shdr)
+        {
+        }
+        chunk.seekAfter(file);
     }
-    chunk.seekAfter(file);
-  }
 }
 
 bool sfzero::SF2::Hydra::isComplete()
 {
-  return phdrItems && pbagItems && pmodItems && pgenItems && instItems && ibagItems && imodItems && igenItems && shdrItems;
+    return phdrItems && pbagItems && pmodItems && pgenItems && instItems && ibagItems && imodItems && igenItems && shdrItems;
 }

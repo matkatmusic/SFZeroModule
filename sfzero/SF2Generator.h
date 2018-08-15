@@ -13,27 +13,27 @@
 
 namespace sfzero
 {
-
-struct SF2Generator
-{
-  enum Type
-  {
-    Word,
-    Short,
-    Range
-  };
-
-  const char *name;
-  Type type;
-
-  enum
-  {
+    
+    struct SF2Generator
+    {
+        enum Type
+        {
+            Word,
+            Short,
+            Range
+        };
+        
+        const char *name;
+        Type type;
+        
+        enum
+        {
 #include "sf2-chunks/generators.h"
-  };
-};
-
-const SF2Generator *GeneratorFor(int index);
-
+        };
+    };
+    
+    const SF2Generator *GeneratorFor(int index);
+    
 #undef SF2GeneratorValue
 }
 

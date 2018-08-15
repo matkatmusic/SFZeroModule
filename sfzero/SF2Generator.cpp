@@ -7,25 +7,25 @@
 #include "SF2Generator.h"
 
 #define SF2GeneratorValue(name, type)                                                                                            \
-  {                                                                                                                              \
-    #name, sfzero::SF2Generator::type                                                                                            \
-  }
+{                                                                                                                              \
+#name, sfzero::SF2Generator::type                                                                                            \
+}
 
 static const sfzero::SF2Generator generators[] = {
-
+    
 #include "sf2-chunks/generators.h"
-
+    
 };
 
 #undef SF2GeneratorValue
 
 const sfzero::SF2Generator *sfzero::GeneratorFor(int index)
 {
-  static const int numGenerators = sizeof(generators) / sizeof(generators[0]);
-
-  if (index >= numGenerators)
-  {
-    return nullptr;
-  }
-  return &generators[index];
+    static const int numGenerators = sizeof(generators) / sizeof(generators[0]);
+    
+    if (index >= numGenerators)
+    {
+        return nullptr;
+    }
+    return &generators[index];
 }

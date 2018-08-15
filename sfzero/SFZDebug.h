@@ -13,7 +13,7 @@
 
 namespace sfzero
 {
-void dbgprintf(const char *msg, ...);
+    void dbgprintf(const char *msg, ...);
 }
 
 #endif

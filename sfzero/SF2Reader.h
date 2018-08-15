@@ -11,27 +11,27 @@
 
 namespace sfzero
 {
-
-class SF2Sound;
-class Sample;
-struct Region;
-
-class SF2Reader
-{
-public:
-  SF2Reader(SF2Sound *sound, const juce::File &file);
-  virtual ~SF2Reader();
-
-  void read();
-  juce::AudioSampleBuffer *readSamples(double *progressVar = nullptr, juce::Thread *thread = nullptr);
-
-private:
-  SF2Sound *sound_;
-  juce::FileInputStream *file_;
-
-  void addGeneratorToRegion(word genOper, SF2::genAmountType *amount, Region *region);
-  JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(SF2Reader)
-};
+    
+    class SF2Sound;
+    class Sample;
+    struct Region;
+    
+    class SF2Reader
+    {
+    public:
+        SF2Reader(SF2Sound *sound, const juce::File &file);
+        virtual ~SF2Reader();
+        
+        void read();
+        juce::AudioSampleBuffer *readSamples(double *progressVar = nullptr, juce::Thread *thread = nullptr);
+        
+    private:
+        SF2Sound *sound_;
+        juce::FileInputStream *file_;
+        
+        void addGeneratorToRegion(word genOper, SF2::genAmountType *amount, Region *region);
+        JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(SF2Reader)
+    };
 }
 
 #endif // SF2READER_H_INCLUDED
