@@ -9,14 +9,11 @@
 
 #include "SF2WinTypes.h"
 #include <vector>
-//#define SF2Field(type, name) type name;
 
 namespace sfzero
 {
-    
     namespace SF2
     {
-        
         struct rangesType
         {
             byte lo, hi;
@@ -30,7 +27,6 @@ namespace sfzero
         
         struct iver
         {
-//#include "sf2-chunks/iver.h"
             word major;
             word minor;
             void readFrom(juce::InputStream *file);
@@ -38,7 +34,6 @@ namespace sfzero
         
         struct phdr
         {
-//#include "sf2-chunks/phdr.h"
             char20 presetName;
             word preset;
             word bank;
@@ -53,7 +48,6 @@ namespace sfzero
         
         struct pbag
         {
-//#include "sf2-chunks/pbag.h"
             word genNdx;
             word modNdx;
             void readFrom(juce::InputStream *file);
@@ -63,7 +57,6 @@ namespace sfzero
         
         struct pmod
         {
-//#include "sf2-chunks/pmod.h"
             word modSrcOper;
             word modDestOper;
             short modAmount;
@@ -76,7 +69,6 @@ namespace sfzero
         
         struct pgen
         {
-//#include "sf2-chunks/pgen.h"
             word genOper;
             genAmountType genAmount;
 
@@ -87,7 +79,6 @@ namespace sfzero
         
         struct inst
         {
-//#include "sf2-chunks/inst.h"
             char20 instName;
             word instBagNdx;
             void readFrom(juce::InputStream *file);
@@ -97,7 +88,6 @@ namespace sfzero
         
         struct ibag
         {
-//#include "sf2-chunks/ibag.h"
             word instGenNdx;
             word instModNdx;
 
@@ -108,7 +98,6 @@ namespace sfzero
         
         struct imod
         {
-//#include "sf2-chunks/imod.h"
             word modSrcOper;
             word modDestOper;
             short modAmount;
@@ -122,7 +111,6 @@ namespace sfzero
         
         struct igen
         {
-//#include "sf2-chunks/igen.h"
             word genOper;
             genAmountType genAmount;
             void readFrom(juce::InputStream *file);
@@ -132,7 +120,6 @@ namespace sfzero
         
         struct shdr
         {
-//#include "sf2-chunks/shdr.h"
             char20 sampleName;
             dword start;
             dword end;
@@ -149,35 +136,17 @@ namespace sfzero
             static const int sizeInFile = 46;
         };
         
-        struct HydraData
-        {
-            virtual void readFrom(juce::InputStream *file) = 0;
-            virtual ~HydraData() {}
-            
-            
-        };
-        
         struct Hydra
         {
-//            phdr *phdrItems;
-//            pbag *pbagItems;
-//            pmod *pmodItems;
-//            pgen *pgenItems;
-//            inst *instItems;
-//            ibag *ibagItems;
-//            imod *imodItems;
-//            igen *igenItems;
-//            shdr *shdrItems;
-            
             std::vector<phdr> phdrItems;
-            std::vector<pbag>pbagItems;
-            std::vector<pmod>pmodItems;
-            std::vector<pgen>pgenItems;
-            std::vector<inst>instItems;
-            std::vector<ibag>ibagItems;
-            std::vector<imod>imodItems;
-            std::vector<igen>igenItems;
-            std::vector<shdr>shdrItems;
+            std::vector<pbag> pbagItems;
+            std::vector<pmod> pmodItems;
+            std::vector<pgen> pgenItems;
+            std::vector<inst> instItems;
+            std::vector<ibag> ibagItems;
+            std::vector<imod> imodItems;
+            std::vector<igen> igenItems;
+            std::vector<shdr> shdrItems;
             
             template<typename T>
             void readHelper(const sfzero::RIFFChunk& chunk,
@@ -193,14 +162,10 @@ namespace sfzero
                 }
             }
             
-//            int phdrNumItems, pbagNumItems, pmodNumItems, pgenNumItems;
-//            int instNumItems, ibagNumItems, imodNumItems, igenNumItems;
-//            int shdrNumItems;
             
-            Hydra();
-            ~Hydra();
+            Hydra() {}
+            ~Hydra() {}
             
-            void readFromOld(juce::InputStream *file, juce::int64 pdtaChunkEnd);
             void readFrom(juce::InputStream *file, juce::int64 pdtaChunkEnd);
             bool isComplete();
         };
