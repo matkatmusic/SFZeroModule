@@ -43,7 +43,7 @@ public:
 
 void sfzero::SF2Sound::loadRegions()
 {
-    sfzero::SF2Reader reader(this, getFile());
+    sfzero::SF2Reader reader(*this, getFile());
     
     reader.read();
     
@@ -56,7 +56,7 @@ void sfzero::SF2Sound::loadRegions()
 
 void sfzero::SF2Sound::loadSamples(juce::AudioFormatManager& /*formatManager*/, double *progressVar, juce::Thread *thread)
 {
-    sfzero::SF2Reader reader(this, getFile());
+    sfzero::SF2Reader reader(*this, getFile());
     juce::AudioSampleBuffer *buffer = reader.readSamples(progressVar, thread);
     
     if (buffer)
@@ -74,7 +74,10 @@ void sfzero::SF2Sound::loadSamples(juce::AudioFormatManager& /*formatManager*/, 
     }
 }
 
-void sfzero::SF2Sound::addPreset(sfzero::SF2Sound::Preset *preset) { presets_.add(preset); }
+void sfzero::SF2Sound::addPreset(std::unique_ptr<sfzero::SF2Sound::Preset> preset)
+{
+    presets_.add( preset.release() );
+}
 
 int sfzero::SF2Sound::numSubsounds() { return presets_.size(); }
 

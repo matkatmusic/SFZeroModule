@@ -7,86 +7,86 @@
 #include "SF2.h"
 #include "RIFF.h"
 
-void sfzero::SF2::iver::readFrom(juce::InputStream *file)
+void sfzero::SF2::iver::readFrom(juce::InputStream& file)
 {
-    major = (word)file->readShort();
-    minor = (word)file->readShort();
+    major = (word)file.readShort();
+    minor = (word)file.readShort();
 }
 
-void sfzero::SF2::phdr::readFrom(juce::InputStream *file)
+void sfzero::SF2::phdr::readFrom(juce::InputStream& file)
 {
-    file->read(presetName, 20);
-    preset = (word)file->readShort();
-    bank = (word)file->readShort();
-    presetBagNdx = (word)file->readShort();
-    library = (dword)file->readInt();
-    genre = (dword)file->readInt();
-    morphology = (dword)file->readInt();
+    file.read(presetName, 20);
+    preset = (word)file.readShort();
+    bank = (word)file.readShort();
+    presetBagNdx = (word)file.readShort();
+    library = (dword)file.readInt();
+    genre = (dword)file.readInt();
+    morphology = (dword)file.readInt();
 }
 
-void sfzero::SF2::pbag::readFrom(juce::InputStream *file)
+void sfzero::SF2::pbag::readFrom(juce::InputStream& file)
 {
-    genNdx = (word)file->readShort();
-    modNdx = (word)file->readShort();
+    genNdx = (word)file.readShort();
+    modNdx = (word)file.readShort();
 }
 
-void sfzero::SF2::pmod::readFrom(juce::InputStream *file)
+void sfzero::SF2::pmod::readFrom(juce::InputStream& file)
 {
-    modSrcOper = (word)file->readShort();
-    modDestOper = (word)file->readShort();
-    modAmount = file->readShort();
-    modAmtSrcOper = (word)file->readShort();
-    modTransOper = (word)file->readShort();
+    modSrcOper = (word)file.readShort();
+    modDestOper = (word)file.readShort();
+    modAmount = file.readShort();
+    modAmtSrcOper = (word)file.readShort();
+    modTransOper = (word)file.readShort();
 }
 
-void sfzero::SF2::pgen::readFrom(juce::InputStream *file)
+void sfzero::SF2::pgen::readFrom(juce::InputStream& file)
 {
-    genOper = (word)file->readShort();
-    genAmount.shortAmount = file->readShort();
+    genOper = (word)file.readShort();
+    genAmount.shortAmount = file.readShort();
 }
 
-void sfzero::SF2::inst::readFrom(juce::InputStream *file)
+void sfzero::SF2::inst::readFrom(juce::InputStream& file)
 {
-    file->read(instName, 20);
-    instBagNdx = (word)file->readShort();
+    file.read(instName, 20);
+    instBagNdx = (word)file.readShort();
 }
 
-void sfzero::SF2::ibag::readFrom(juce::InputStream *file)
+void sfzero::SF2::ibag::readFrom(juce::InputStream& file)
 {
-    instGenNdx = (word)file->readShort();
-    instModNdx = (word)file->readShort();
+    instGenNdx = (word)file.readShort();
+    instModNdx = (word)file.readShort();
 }
 
-void sfzero::SF2::imod::readFrom(juce::InputStream *file)
+void sfzero::SF2::imod::readFrom(juce::InputStream& file)
 {
-    modSrcOper = (word)file->readShort();
-    modDestOper = (word)file->readShort();
-    modAmount = file->readShort();
-    modAmtSrcOper = (word)file->readShort();
-    modTransOper = (word)file->readShort();
+    modSrcOper = (word)file.readShort();
+    modDestOper = (word)file.readShort();
+    modAmount = file.readShort();
+    modAmtSrcOper = (word)file.readShort();
+    modTransOper = (word)file.readShort();
 }
 
-void sfzero::SF2::igen::readFrom(juce::InputStream *file)
+void sfzero::SF2::igen::readFrom(juce::InputStream& file)
 {
-    genOper = (word)file->readShort();
-    genAmount.shortAmount = file->readShort();
+    genOper = (word)file.readShort();
+    genAmount.shortAmount = file.readShort();
 }
 
-void sfzero::SF2::shdr::readFrom(juce::InputStream *file)
+void sfzero::SF2::shdr::readFrom(juce::InputStream& file)
 {
-    file->read(sampleName, 20);
-    start = (dword)file->readInt();
-    end = (dword)file->readInt();
-    startLoop = (dword)file->readInt();
-    endLoop = (dword)file->readInt();
-    sampleRate = (dword)file->readInt();
-    originalPitch = (byte)file->readByte();
-    pitchCorrection = file->readByte();
-    sampleLink = (word)file->readShort();
-    sampleType = (word)file->readShort();
+    file.read(sampleName, 20);
+    start = (dword)file.readInt();
+    end = (dword)file.readInt();
+    startLoop = (dword)file.readInt();
+    endLoop = (dword)file.readInt();
+    sampleRate = (dword)file.readInt();
+    originalPitch = (byte)file.readByte();
+    pitchCorrection = file.readByte();
+    sampleLink = (word)file.readShort();
+    sampleType = (word)file.readShort();
 }
 
-void sfzero::SF2::Hydra::readFrom(juce::InputStream* file, juce::int64 pdtaChunkEnd)
+void sfzero::SF2::Hydra::readFrom(juce::InputStream& file, juce::int64 pdtaChunkEnd)
 {
     auto check = [](sfzero::RIFFChunk& chunk, sfzero::fourcc chunkName)
     {
@@ -108,7 +108,7 @@ void sfzero::SF2::Hydra::readFrom(juce::InputStream* file, juce::int64 pdtaChunk
     sfzero::fourcc igenType = {'i','g','e','n'};
     sfzero::fourcc shdrType = {'s','h','d','r'};
     
-    while( file->getPosition() < pdtaChunkEnd )
+    while( file.getPosition() < pdtaChunkEnd )
     {
         sfzero::RIFFChunk chunk;
         chunk.readFrom(file);

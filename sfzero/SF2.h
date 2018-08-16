@@ -29,7 +29,7 @@ namespace sfzero
         {
             word major;
             word minor;
-            void readFrom(juce::InputStream *file);
+            void readFrom(juce::InputStream& file);
         };
         
         struct phdr
@@ -41,7 +41,7 @@ namespace sfzero
             dword library;
             dword genre;
             dword morphology;
-            void readFrom(juce::InputStream *file);
+            void readFrom(juce::InputStream& file);
             
             static const int sizeInFile = 38;
         };
@@ -50,7 +50,7 @@ namespace sfzero
         {
             word genNdx;
             word modNdx;
-            void readFrom(juce::InputStream *file);
+            void readFrom(juce::InputStream& file);
             
             static const int sizeInFile = 4;
         };
@@ -62,7 +62,7 @@ namespace sfzero
             short modAmount;
             word modAmtSrcOper;
             word modTransOper;
-            void readFrom(juce::InputStream *file);
+            void readFrom(juce::InputStream& file);
             
             static const int sizeInFile = 10;
         };
@@ -72,7 +72,7 @@ namespace sfzero
             word genOper;
             genAmountType genAmount;
 
-            void readFrom(juce::InputStream *file);
+            void readFrom(juce::InputStream& file);
             
             static const int sizeInFile = 4;
         };
@@ -81,7 +81,7 @@ namespace sfzero
         {
             char20 instName;
             word instBagNdx;
-            void readFrom(juce::InputStream *file);
+            void readFrom(juce::InputStream& file);
             
             static const int sizeInFile = 22;
         };
@@ -91,7 +91,7 @@ namespace sfzero
             word instGenNdx;
             word instModNdx;
 
-            void readFrom(juce::InputStream *file);
+            void readFrom(juce::InputStream& file);
             
             static const int sizeInFile = 4;
         };
@@ -104,7 +104,7 @@ namespace sfzero
             word modAmtSrcOper;
             word modTransOper;
 
-            void readFrom(juce::InputStream *file);
+            void readFrom(juce::InputStream& file);
             
             static const int sizeInFile = 10;
         };
@@ -113,7 +113,7 @@ namespace sfzero
         {
             word genOper;
             genAmountType genAmount;
-            void readFrom(juce::InputStream *file);
+            void readFrom(juce::InputStream& file);
             
             static const int sizeInFile = 4;
         };
@@ -131,7 +131,7 @@ namespace sfzero
             word sampleLink;
             word sampleType;
 
-            void readFrom(juce::InputStream *file);
+            void readFrom(juce::InputStream& file);
             
             static const int sizeInFile = 46;
         };
@@ -151,7 +151,7 @@ namespace sfzero
             template<typename T>
             void readHelper(const sfzero::RIFFChunk& chunk,
                             std::vector<T>& chunkItems,
-                            juce::InputStream* file)
+                            juce::InputStream& file)
             {
                 int numItems = chunk.size / T::sizeInFile;
                 for( int i = 0; i < numItems; ++i )
@@ -166,7 +166,7 @@ namespace sfzero
             Hydra() {}
             ~Hydra() {}
             
-            void readFrom(juce::InputStream *file, juce::int64 pdtaChunkEnd);
+            void readFrom(juce::InputStream& file, juce::int64 pdtaChunkEnd);
             bool isComplete();
         };
     }

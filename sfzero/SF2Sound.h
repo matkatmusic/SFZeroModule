@@ -9,6 +9,7 @@
 
 #include "SFZSound.h"
 
+#include <memory>
 namespace sfzero
 {
     
@@ -30,13 +31,25 @@ namespace sfzero
             int preset;
             juce::OwnedArray<Region> regions;
             
-            Preset(juce::String nameIn, int bankIn, int presetIn) : name(nameIn), bank(bankIn), preset(presetIn) {}
+            Preset(juce::String nameIn, int bankIn, int presetIn) :
+                name(nameIn),
+                bank(bankIn),
+                preset(presetIn)
+            {}
+            
             ~Preset() {}
-            void addRegion(Region *region) { regions.add(region); }
+            //void addRegion(Region *region) { regions.add(region); }
+            void addRegion(std::unique_ptr<Region> region)
+            {
+                regions.add( region.release() );
+            }
         };
-        void addPreset(Preset *preset);
+        //void addPreset(Preset *preset);
+        void addPreset( std::unique_ptr<Preset> preset );
         
         int numSubsounds() override;
+        
+        ///returns the name of a particular patch
         juce::String subsoundName(int whichSubsound) override;
         void useSubsound(int whichSubsound) override;
         int selectedSubsound() override;

@@ -9,41 +9,45 @@
 #include "SF2.h"
 #include "SF2Generator.h"
 #include "SF2Sound.h"
+#include <memory>
 
-sfzero::SF2Reader::SF2Reader(sfzero::SF2Sound *soundIn, const juce::File &fileIn) : sound_(soundIn)
+sfzero::SF2Reader::SF2Reader(sfzero::SF2Sound& soundIn, const juce::File &fileIn) :
+sf2Sound(soundIn),
+fileInputStream( fileIn.createInputStream() )
 {
-    file_ = fileIn.createInputStream();
+//    fileInputStream = fileIn.createInputStream();
 }
 
-sfzero::SF2Reader::~SF2Reader() { delete file_; }
+//sfzero::SF2Reader::~SF2Reader() { delete fileInputStream_; }
 
 void sfzero::SF2Reader::read()
 {
-    if (file_ == nullptr)
+    if (fileInputStream == nullptr)
     {
-        sound_->addError("Couldn't open file.");
+        sf2Sound.addError("Couldn't open file.");
         return;
     }
     
+    fileInputStream->setPosition(0);
+    sfzero::RIFFChunk riffChunk;
+    riffChunk.readFrom(*fileInputStream);
+    
     // Read the hydra.
     sfzero::SF2::Hydra hydra;
-    file_->setPosition(0);
-    sfzero::RIFFChunk riffChunk;
-    riffChunk.readFrom(file_);
-    while (file_->getPosition() < riffChunk.end())
+    while (fileInputStream->getPosition() < riffChunk.end())
     {
         sfzero::RIFFChunk chunk;
-        chunk.readFrom(file_);
+        chunk.readFrom(*fileInputStream);
         if (FourCCEquals(chunk.id, "pdta"))
         {
-            hydra.readFrom(file_, chunk.end());
+            hydra.readFrom(*fileInputStream, chunk.end());
             break;
         }
-        chunk.seekAfter(file_);
+        chunk.seekAfter(*fileInputStream);
     }
     if (!hydra.isComplete())
     {
-        sound_->addError("Invalid SF2 file (missing or incomplete hydra).");
+        sf2Sound.addError("Invalid SF2 file (missing or incomplete hydra).");
         return;
     }
     
@@ -52,8 +56,8 @@ void sfzero::SF2Reader::read()
     for( int whichPreset = 0; whichPreset < hydra.phdrItems.size() - 1; ++whichPreset)
     {
         sfzero::SF2::phdr *phdr = &hydra.phdrItems[whichPreset];
-        sfzero::SF2Sound::Preset *preset = new sfzero::SF2Sound::Preset(phdr->presetName, phdr->bank, phdr->preset);
-        sound_->addPreset(preset);
+        //sfzero::SF2Sound::Preset *preset = new sfzero::SF2Sound::Preset(phdr->presetName, phdr->bank, phdr->preset);
+        auto preset = std::make_unique<sfzero::SF2Sound::Preset>(phdr->presetName, phdr->bank, phdr->preset);
         
         // Zones.
         //*** TODO: Handle global zone (modulators only).
@@ -126,13 +130,14 @@ void sfzero::SF2Reader::read()
                                     if (zoneRegion.volume > 6.0)
                                     {
                                         zoneRegion.volume = 6.0;
-                                        sound_->addUnsupportedOpcode("extreme gain in initialAttenuation");
+                                        sf2Sound.addUnsupportedOpcode("extreme gain in initialAttenuation");
                                     }
                                     
-                                    sfzero::Region *newRegion = new sfzero::Region();
+                                    //sfzero::Region *newRegion = new sfzero::Region();
+                                    auto newRegion = std::make_unique<sfzero::Region>();
                                     *newRegion = zoneRegion;
-                                    newRegion->sample = sound_->sampleFor(shdr->sampleRate);
-                                    preset->addRegion(newRegion);
+                                    newRegion->sample = sf2Sound.sampleFor(shdr->sampleRate);
+                                    preset->addRegion(std::move(newRegion));
                                     hadSampleID = true;
                                 }
                                 else
@@ -152,13 +157,13 @@ void sfzero::SF2Reader::read()
                             int whichMod = ibag->instModNdx;
                             if (whichMod < modEnd)
                             {
-                                sound_->addUnsupportedOpcode("any modulator");
+                                sf2Sound.addUnsupportedOpcode("any modulator");
                             }
                         }
                     }
                     else
                     {
-                        sound_->addError("Instrument out of range.");
+                        sf2Sound.addError("Instrument out of range.");
                     }
                 }
                 // Other generators.
@@ -173,9 +178,10 @@ void sfzero::SF2Reader::read()
             int whichMod = pbag->modNdx;
             if (whichMod < modEnd)
             {
-                sound_->addUnsupportedOpcode("any modulator");
+                sf2Sound.addUnsupportedOpcode("any modulator");
             }
         }
+        sf2Sound.addPreset(std::move(preset));
     }
 }
 
@@ -183,43 +189,43 @@ juce::AudioSampleBuffer *sfzero::SF2Reader::readSamples(double *progressVar, juc
 {
     static const int bufferSize = 32768;
     
-    if (file_ == nullptr)
+    if (fileInputStream == nullptr)
     {
-        sound_->addError("Couldn't open file.");
+        sf2Sound.addError("Couldn't open file.");
         return nullptr;
     }
     
     // Find the "sdta" chunk.
-    file_->setPosition(0);
+    fileInputStream->setPosition(0);
     sfzero::RIFFChunk riffChunk;
-    riffChunk.readFrom(file_);
+    riffChunk.readFrom(*fileInputStream);
     bool found = false;
     sfzero::RIFFChunk chunk;
-    while (file_->getPosition() < riffChunk.end())
+    while (fileInputStream->getPosition() < riffChunk.end())
     {
-        chunk.readFrom(file_);
+        chunk.readFrom(*fileInputStream);
         if (FourCCEquals(chunk.id, "sdta"))
         {
             found = true;
             break;
         }
-        chunk.seekAfter(file_);
+        chunk.seekAfter(*fileInputStream);
     }
     juce::int64 sdtaEnd = chunk.end();
     found = false;
-    while (file_->getPosition() < sdtaEnd)
+    while (fileInputStream->getPosition() < sdtaEnd)
     {
-        chunk.readFrom(file_);
+        chunk.readFrom(*fileInputStream);
         if (FourCCEquals(chunk.id, "smpl"))
         {
             found = true;
             break;
         }
-        chunk.seekAfter(file_);
+        chunk.seekAfter(*fileInputStream);
     }
     if (!found)
     {
-        sound_->addError("SF2 is missing its \"smpl\" chunk.");
+        sf2Sound.addError("SF2 is missing its \"smpl\" chunk.");
         return nullptr;
     }
     
@@ -239,7 +245,7 @@ juce::AudioSampleBuffer *sfzero::SF2Reader::readSamples(double *progressVar, juc
         {
             samplesToRead = samplesLeft;
         }
-        file_->read(buffer, samplesToRead * sizeof(short));
+        fileInputStream->read(buffer, samplesToRead * sizeof(short));
         
         // Convert from signed 16-bit to float.
         int samplesToConvert = samplesToRead;
@@ -427,7 +433,7 @@ void sfzero::SF2Reader::addGeneratorToRegion(sfzero::word genOper, sfzero::SF2::
         case sfzero::SF2Generator::unused5:
         {
             const sfzero::SF2Generator *generator = sfzero::GeneratorFor(static_cast<int>(genOper));
-            sound_->addUnsupportedOpcode(generator->name);
+            sf2Sound.addUnsupportedOpcode(generator->name);
         }
             break;
     }
