@@ -48,7 +48,8 @@ void sfzero::SF2Reader::read()
     }
     
     // Read each preset.
-    for (int whichPreset = 0; whichPreset < hydra.phdrNumItems - 1; ++whichPreset)
+    //for (int whichPreset = 0; whichPreset < hydra.phdrNumItems - 1; ++whichPreset)
+    for( int whichPreset = 0; whichPreset < hydra.phdrItems.size() - 1; ++whichPreset)
     {
         sfzero::SF2::phdr *phdr = &hydra.phdrItems[whichPreset];
         sfzero::SF2Sound::Preset *preset = new sfzero::SF2Sound::Preset(phdr->presetName, phdr->bank, phdr->preset);
@@ -73,7 +74,8 @@ void sfzero::SF2Reader::read()
                 if (pgen->genOper == sfzero::SF2Generator::instrument)
                 {
                     sfzero::word whichInst = pgen->genAmount.wordAmount;
-                    if (whichInst < hydra.instNumItems)
+                    //if (whichInst < hydra.instNumItems)
+                    if( whichInst < hydra.instItems.size() )
                     {
                         sfzero::Region instRegion;
                         instRegion.clearForSF2();

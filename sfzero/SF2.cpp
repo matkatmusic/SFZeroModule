@@ -106,27 +106,44 @@ void sfzero::SF2::shdr::readFrom(juce::InputStream *file)
     SF2Field(word, sampleType)
 }
 
-sfzero::SF2::Hydra::Hydra()
-: phdrItems(nullptr), pbagItems(nullptr), pmodItems(nullptr), pgenItems(nullptr), instItems(nullptr), ibagItems(nullptr),
-imodItems(nullptr), igenItems(nullptr), shdrItems(nullptr), phdrNumItems(0), pbagNumItems(0), pmodNumItems(0), pgenNumItems(0), 
-instNumItems(0), ibagNumItems(0), imodNumItems(0), igenNumItems(0), shdrNumItems(0)
+sfzero::SF2::Hydra::Hydra() //:
+//phdrItems(nullptr),
+//pbagItems(nullptr),
+//pmodItems(nullptr),
+//pgenItems(nullptr),
+//instItems(nullptr),
+//ibagItems(nullptr),
+//imodItems(nullptr),
+//igenItems(nullptr),
+//shdrItems(nullptr),
+//phdrNumItems(0),
+//pbagNumItems(0),
+//pmodNumItems(0),
+//pgenNumItems(0),
+//instNumItems(0),
+//ibagNumItems(0),
+//imodNumItems(0),
+//igenNumItems(0),
+//shdrNumItems(0)
 {
-}
-sfzero::SF2::Hydra::~Hydra()
-{
-    delete phdrItems;
-    delete pbagItems;
-    delete pmodItems;
-    delete pgenItems;
-    delete instItems;
-    delete ibagItems;
-    delete imodItems;
-    delete igenItems;
-    delete shdrItems;
 }
 
-void sfzero::SF2::Hydra::readFrom(juce::InputStream *file, juce::int64 pdtaChunkEnd)
+sfzero::SF2::Hydra::~Hydra()
 {
+//    delete phdrItems;
+//    delete pbagItems;
+//    delete pmodItems;
+//    delete pgenItems;
+//    delete instItems;
+//    delete ibagItems;
+//    delete imodItems;
+//    delete igenItems;
+//    delete shdrItems;
+}
+
+void sfzero::SF2::Hydra::readFromOld(juce::InputStream *file, juce::int64 pdtaChunkEnd)
+{
+#if false
     int i, numItems;
     
 #define HandleChunk(chunkName)                              \
@@ -153,9 +170,87 @@ void sfzero::SF2::Hydra::readFrom(juce::InputStream *file, juce::int64 pdtaChunk
         }
         chunk.seekAfter(file);
     }
+#endif
+}
+
+void sfzero::SF2::Hydra::readFrom(juce::InputStream* file, juce::int64 pdtaChunkEnd)
+{
+    auto check = [](sfzero::RIFFChunk& chunk, sfzero::fourcc chunkName)
+    {
+        sfzero::fourcc& chunkID = chunk.id;
+        return
+        chunkID[0] == chunkName[0] &&
+        chunkID[1] == chunkName[1] &&
+        chunkID[2] == chunkName[2] &&
+        chunkID[3] == chunkName[3];
+    };
+    
+    sfzero::fourcc phdrType = {'p','h','d','r'};
+    sfzero::fourcc pbagType = {'p','b','a','g'};
+    sfzero::fourcc pmodType = {'p','m','o','d'};
+    sfzero::fourcc pgenType = {'p','g','e','n'};
+    sfzero::fourcc instType = {'i','n','s','t'};
+    sfzero::fourcc ibagType = {'i','b','a','g'};
+    sfzero::fourcc imodType = {'i','m','o','d'};
+    sfzero::fourcc igenType = {'i','g','e','n'};
+    sfzero::fourcc shdrType = {'s','h','d','r'};
+    
+    while( file->getPosition() < pdtaChunkEnd )
+    {
+        sfzero::RIFFChunk chunk;
+        chunk.readFrom(file);
+        
+        if( check(chunk, phdrType ) )
+        {
+            readHelper(chunk, phdrItems, file);
+        }
+        else if( check(chunk, pbagType ) )
+        {
+            readHelper(chunk, pbagItems, file);
+        }
+        else if( check(chunk, pmodType ) )
+        {
+            readHelper(chunk, pmodItems, file);
+        }
+        else if( check(chunk, pgenType ) )
+        {
+            readHelper(chunk, pgenItems, file);
+        }
+        else if( check(chunk, instType) )
+        {
+            readHelper(chunk, instItems, file);
+        }
+        else if( check(chunk, ibagType ) )
+        {
+            readHelper(chunk, ibagItems, file);
+        }
+        else if( check(chunk, imodType) )
+        {
+            readHelper(chunk, imodItems, file);
+        }
+        else if( check(chunk, igenType ) )
+        {
+            readHelper(chunk, igenItems, file);
+        }
+        else if( check(chunk, shdrType ) )
+        {
+            readHelper(chunk, shdrItems, file);
+        }
+        
+        chunk.seekAfter(file);
+    }
 }
 
 bool sfzero::SF2::Hydra::isComplete()
 {
-    return phdrItems && pbagItems && pmodItems && pgenItems && instItems && ibagItems && imodItems && igenItems && shdrItems;
+    return
+    !phdrItems.empty() &&
+    !pbagItems.empty() &&
+    !pmodItems.empty() &&
+    !pgenItems.empty() &&
+    !instItems.empty() &&
+    !ibagItems.empty() &&
+    !imodItems.empty() &&
+    !igenItems.empty() &&
+    !shdrItems.empty();
 }

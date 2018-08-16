@@ -8,7 +8,7 @@
 #define SF2_H_INCLUDED
 
 #include "SF2WinTypes.h"
-
+#include <vector>
 //#define SF2Field(type, name) type name;
 
 namespace sfzero
@@ -153,27 +153,54 @@ namespace sfzero
         {
             virtual void readFrom(juce::InputStream *file) = 0;
             virtual ~HydraData() {}
+            
+            
         };
         
         struct Hydra
         {
-            phdr *phdrItems;
-            pbag *pbagItems;
-            pmod *pmodItems;
-            pgen *pgenItems;
-            inst *instItems;
-            ibag *ibagItems;
-            imod *imodItems;
-            igen *igenItems;
-            shdr *shdrItems;
+//            phdr *phdrItems;
+//            pbag *pbagItems;
+//            pmod *pmodItems;
+//            pgen *pgenItems;
+//            inst *instItems;
+//            ibag *ibagItems;
+//            imod *imodItems;
+//            igen *igenItems;
+//            shdr *shdrItems;
             
-            int phdrNumItems, pbagNumItems, pmodNumItems, pgenNumItems;
-            int instNumItems, ibagNumItems, imodNumItems, igenNumItems;
-            int shdrNumItems;
+            std::vector<phdr> phdrItems;
+            std::vector<pbag>pbagItems;
+            std::vector<pmod>pmodItems;
+            std::vector<pgen>pgenItems;
+            std::vector<inst>instItems;
+            std::vector<ibag>ibagItems;
+            std::vector<imod>imodItems;
+            std::vector<igen>igenItems;
+            std::vector<shdr>shdrItems;
+            
+            template<typename T>
+            void readHelper(const sfzero::RIFFChunk& chunk,
+                            std::vector<T>& chunkItems,
+                            juce::InputStream* file)
+            {
+                int numItems = chunk.size / T::sizeInFile;
+                for( int i = 0; i < numItems; ++i )
+                {
+                    T t;
+                    t.readFrom(file);
+                    chunkItems.push_back(t);
+                }
+            }
+            
+//            int phdrNumItems, pbagNumItems, pmodNumItems, pgenNumItems;
+//            int instNumItems, ibagNumItems, imodNumItems, igenNumItems;
+//            int shdrNumItems;
             
             Hydra();
             ~Hydra();
             
+            void readFromOld(juce::InputStream *file, juce::int64 pdtaChunkEnd);
             void readFrom(juce::InputStream *file, juce::int64 pdtaChunkEnd);
             bool isComplete();
         };
