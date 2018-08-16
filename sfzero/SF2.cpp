@@ -7,131 +7,82 @@
 #include "SF2.h"
 #include "RIFF.h"
 
-#define readAbyte(name, file) name = (byte)file->readByte();
-#define readAchar(name, file) name = file->readByte();
-#define readAdword(name, file) name = (dword)file->readInt();
-#define readAword(name, file) name = (word)file->readShort();
-#define readAshort(name, file) name = file->readShort();
-#define readAchar20(name, file) file->read(name, 20);
-#define readAgenAmountType(name, file) name.shortAmount = file->readShort();
-
-#define SF2Field(type, name) readA##type(name, file)
-
 void sfzero::SF2::iver::readFrom(juce::InputStream *file)
 {
-    //SF2Field(word, major);
     major = (word)file->readShort();
-    //SF2Field(word, minor);
     minor = (word)file->readShort();
 }
 
 void sfzero::SF2::phdr::readFrom(juce::InputStream *file)
 {
-//    SF2Field(char20, presetName)
     file->read(presetName, 20);
-//    SF2Field(word, preset)
     preset = (word)file->readShort();
-//    SF2Field(word, bank)
     bank = (word)file->readShort();
-//    SF2Field(word, presetBagNdx)
     presetBagNdx = (word)file->readShort();
-//    SF2Field(dword, library)
     library = (dword)file->readInt();
-//    SF2Field(dword, genre)
     genre = (dword)file->readInt();
-//    SF2Field(dword, morphology)
     morphology = (dword)file->readInt();
 }
 
 void sfzero::SF2::pbag::readFrom(juce::InputStream *file)
 {
-//    SF2Field(word, genNdx)
     genNdx = (word)file->readShort();
-//    SF2Field(word, modNdx)
     modNdx = (word)file->readShort();
 }
 
 void sfzero::SF2::pmod::readFrom(juce::InputStream *file)
 {
-//    SF2Field(word, modSrcOper)
     modSrcOper = (word)file->readShort();
-//    SF2Field(word, modDestOper)
     modDestOper = (word)file->readShort();
-//    SF2Field(short, modAmount)
     modAmount = file->readShort();
-//    SF2Field(word, modAmtSrcOper)
     modAmtSrcOper = (word)file->readShort();
-//    SF2Field(word, modTransOper)
     modTransOper = (word)file->readShort();
 }
 
 void sfzero::SF2::pgen::readFrom(juce::InputStream *file)
 {
-//    SF2Field(word, genOper)
     genOper = (word)file->readShort();
-//    SF2Field(genAmountType, genAmount)
     genAmount.shortAmount = file->readShort();
 }
 
 void sfzero::SF2::inst::readFrom(juce::InputStream *file)
 {
-//    SF2Field(char20, instName)
     file->read(instName, 20);
-//    SF2Field(word, instBagNdx)
     instBagNdx = (word)file->readShort();
 }
 
 void sfzero::SF2::ibag::readFrom(juce::InputStream *file)
 {
-//    SF2Field(word, instGenNdx)
     instGenNdx = (word)file->readShort();
-//    SF2Field(word, instModNdx)
     instModNdx = (word)file->readShort();
 }
 
 void sfzero::SF2::imod::readFrom(juce::InputStream *file)
 {
-//    SF2Field(word, modSrcOper)
     modSrcOper = (word)file->readShort();
-//    SF2Field(word, modDestOper)
     modDestOper = (word)file->readShort();
-//    SF2Field(short, modAmount)
     modAmount = file->readShort();
-//    SF2Field(word, modAmtSrcOper)
     modAmtSrcOper = (word)file->readShort();
-//    SF2Field(word, modTransOper)
     modTransOper = (word)file->readShort();
 }
 
 void sfzero::SF2::igen::readFrom(juce::InputStream *file)
 {
-//    SF2Field(word, genOper)
     genOper = (word)file->readShort();
-//    SF2Field(genAmountType, genAmount)
     genAmount.shortAmount = file->readShort();
 }
 
 void sfzero::SF2::shdr::readFrom(juce::InputStream *file)
 {
-//    SF2Field(char20, sampleName)
     file->read(sampleName, 20);
-//    SF2Field(dword, start)
     start = (dword)file->readInt();
-//    SF2Field(dword, end)
     end = (dword)file->readInt();
-//    SF2Field(dword, startLoop)
     startLoop = (dword)file->readInt();
-//    SF2Field(dword, endLoop)
     endLoop = (dword)file->readInt();
-//    SF2Field(dword, sampleRate)
     sampleRate = (dword)file->readInt();
-//    SF2Field(byte, originalPitch)
     originalPitch = (byte)file->readByte();
-//    SF2Field(char, pitchCorrection)
     pitchCorrection = file->readByte();
-//    SF2Field(word, sampleLink)
     sampleLink = (word)file->readShort();
-//    SF2Field(word, sampleType)
     sampleType = (word)file->readShort();
 }
 
