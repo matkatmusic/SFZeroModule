@@ -19,52 +19,91 @@
 
 void sfzero::SF2::iver::readFrom(juce::InputStream *file)
 {
-#include "sf2-chunks/iver.h"
+//#include "sf2-chunks/iver.h"
+    SF2Field(word, major);
+    SF2Field(word, minor);
 }
 
 void sfzero::SF2::phdr::readFrom(juce::InputStream *file)
 {
-#include "sf2-chunks/phdr.h"
+//#include "sf2-chunks/phdr.h"
+    SF2Field(char20, presetName)
+    SF2Field(word, preset)
+    SF2Field(word, bank)
+    SF2Field(word, presetBagNdx)
+    SF2Field(dword, library)
+    SF2Field(dword, genre)
+    SF2Field(dword, morphology)
 }
 
 void sfzero::SF2::pbag::readFrom(juce::InputStream *file)
 {
-#include "sf2-chunks/pbag.h"
+//#include "sf2-chunks/pbag.h"
+    SF2Field(word, genNdx)
+    SF2Field(word, modNdx)
 }
 
 void sfzero::SF2::pmod::readFrom(juce::InputStream *file)
 {
-#include "sf2-chunks/pmod.h"
+//#include "sf2-chunks/pmod.h"
+    SF2Field(word, modSrcOper)
+    SF2Field(word, modDestOper)
+    SF2Field(short, modAmount)
+    SF2Field(word, modAmtSrcOper)
+    SF2Field(word, modTransOper)
 }
 
 void sfzero::SF2::pgen::readFrom(juce::InputStream *file)
 {
-#include "sf2-chunks/pgen.h"
+//#include "sf2-chunks/pgen.h"
+    SF2Field(word, genOper)
+    SF2Field(genAmountType, genAmount)
 }
 
 void sfzero::SF2::inst::readFrom(juce::InputStream *file)
 {
-#include "sf2-chunks/inst.h"
+//#include "sf2-chunks/inst.h"
+    SF2Field(char20, instName)
+    SF2Field(word, instBagNdx)
 }
 
 void sfzero::SF2::ibag::readFrom(juce::InputStream *file)
 {
-#include "sf2-chunks/ibag.h"
+//#include "sf2-chunks/ibag.h"
+    SF2Field(word, instGenNdx)
+    SF2Field(word, instModNdx)
 }
 
 void sfzero::SF2::imod::readFrom(juce::InputStream *file)
 {
-#include "sf2-chunks/imod.h"
+//#include "sf2-chunks/imod.h"
+    SF2Field(word, modSrcOper)
+    SF2Field(word, modDestOper)
+    SF2Field(short, modAmount)
+    SF2Field(word, modAmtSrcOper)
+    SF2Field(word, modTransOper)
 }
 
 void sfzero::SF2::igen::readFrom(juce::InputStream *file)
 {
-#include "sf2-chunks/igen.h"
+//#include "sf2-chunks/igen.h"
+    SF2Field(word, genOper)
+    SF2Field(genAmountType, genAmount)
 }
 
 void sfzero::SF2::shdr::readFrom(juce::InputStream *file)
 {
-#include "sf2-chunks/shdr.h"
+//#include "sf2-chunks/shdr.h"
+    SF2Field(char20, sampleName)
+    SF2Field(dword, start)
+    SF2Field(dword, end)
+    SF2Field(dword, startLoop)
+    SF2Field(dword, endLoop)
+    SF2Field(dword, sampleRate)
+    SF2Field(byte, originalPitch)
+    SF2Field(char, pitchCorrection)
+    SF2Field(word, sampleLink)
+    SF2Field(word, sampleType)
 }
 
 sfzero::SF2::Hydra::Hydra()
@@ -90,18 +129,18 @@ void sfzero::SF2::Hydra::readFrom(juce::InputStream *file, juce::int64 pdtaChunk
 {
     int i, numItems;
     
-#define HandleChunk(chunkName)                                                                                                   \
-if (FourCCEquals(chunk.id, #chunkName))                                                                                        \
-{                                                                                                                              \
-numItems = chunk.size / SF2::chunkName::sizeInFile;                                                                          \
-chunkName##NumItems = numItems;                                                                                              \
-chunkName##Items = new SF2::chunkName[numItems];                                                                             \
-for (i = 0; i < numItems; ++i)                                                                                               \
-{                                                                                                                            \
-chunkName##Items[i].readFrom(file);                                                                                        \
-}                                                                                                                            \
-}                                                                                                                              \
-else
+#define HandleChunk(chunkName)                              \
+    if (FourCCEquals(chunk.id, #chunkName))                 \
+    {                                                       \
+        numItems = chunk.size / SF2::chunkName::sizeInFile; \
+        chunkName##NumItems = numItems;                     \
+        chunkName##Items = new SF2::chunkName[numItems];    \
+        for (i = 0; i < numItems; ++i)                      \
+        {                                                   \
+            chunkName##Items[i].readFrom(file);             \
+        }                                                   \
+    }                                                       \
+    else
     
     while (file->getPosition() < pdtaChunkEnd)
     {

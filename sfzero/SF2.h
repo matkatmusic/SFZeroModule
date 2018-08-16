@@ -9,7 +9,7 @@
 
 #include "SF2WinTypes.h"
 
-#define SF2Field(type, name) type name;
+//#define SF2Field(type, name) type name;
 
 namespace sfzero
 {
@@ -30,13 +30,22 @@ namespace sfzero
         
         struct iver
         {
-#include "sf2-chunks/iver.h"
+//#include "sf2-chunks/iver.h"
+            word major;
+            word minor;
             void readFrom(juce::InputStream *file);
         };
         
         struct phdr
         {
-#include "sf2-chunks/phdr.h"
+//#include "sf2-chunks/phdr.h"
+            char20 presetName;
+            word preset;
+            word bank;
+            word presetBagNdx;
+            dword library;
+            dword genre;
+            dword morphology;
             void readFrom(juce::InputStream *file);
             
             static const int sizeInFile = 38;
@@ -44,7 +53,9 @@ namespace sfzero
         
         struct pbag
         {
-#include "sf2-chunks/pbag.h"
+//#include "sf2-chunks/pbag.h"
+            word genNdx;
+            word modNdx;
             void readFrom(juce::InputStream *file);
             
             static const int sizeInFile = 4;
@@ -52,7 +63,12 @@ namespace sfzero
         
         struct pmod
         {
-#include "sf2-chunks/pmod.h"
+//#include "sf2-chunks/pmod.h"
+            word modSrcOper;
+            word modDestOper;
+            short modAmount;
+            word modAmtSrcOper;
+            word modTransOper;
             void readFrom(juce::InputStream *file);
             
             static const int sizeInFile = 10;
@@ -60,7 +76,10 @@ namespace sfzero
         
         struct pgen
         {
-#include "sf2-chunks/pgen.h"
+//#include "sf2-chunks/pgen.h"
+            word genOper;
+            genAmountType genAmount;
+
             void readFrom(juce::InputStream *file);
             
             static const int sizeInFile = 4;
@@ -68,7 +87,9 @@ namespace sfzero
         
         struct inst
         {
-#include "sf2-chunks/inst.h"
+//#include "sf2-chunks/inst.h"
+            char20 instName;
+            word instBagNdx;
             void readFrom(juce::InputStream *file);
             
             static const int sizeInFile = 22;
@@ -76,7 +97,10 @@ namespace sfzero
         
         struct ibag
         {
-#include "sf2-chunks/ibag.h"
+//#include "sf2-chunks/ibag.h"
+            word instGenNdx;
+            word instModNdx;
+
             void readFrom(juce::InputStream *file);
             
             static const int sizeInFile = 4;
@@ -84,7 +108,13 @@ namespace sfzero
         
         struct imod
         {
-#include "sf2-chunks/imod.h"
+//#include "sf2-chunks/imod.h"
+            word modSrcOper;
+            word modDestOper;
+            short modAmount;
+            word modAmtSrcOper;
+            word modTransOper;
+
             void readFrom(juce::InputStream *file);
             
             static const int sizeInFile = 10;
@@ -92,7 +122,9 @@ namespace sfzero
         
         struct igen
         {
-#include "sf2-chunks/igen.h"
+//#include "sf2-chunks/igen.h"
+            word genOper;
+            genAmountType genAmount;
             void readFrom(juce::InputStream *file);
             
             static const int sizeInFile = 4;
@@ -100,10 +132,27 @@ namespace sfzero
         
         struct shdr
         {
-#include "sf2-chunks/shdr.h"
+//#include "sf2-chunks/shdr.h"
+            char20 sampleName;
+            dword start;
+            dword end;
+            dword startLoop;
+            dword endLoop;
+            dword sampleRate;
+            byte originalPitch;
+            char pitchCorrection;
+            word sampleLink;
+            word sampleType;
+
             void readFrom(juce::InputStream *file);
             
             static const int sizeInFile = 46;
+        };
+        
+        struct HydraData
+        {
+            virtual void readFrom(juce::InputStream *file) = 0;
+            virtual ~HydraData() {}
         };
         
         struct Hydra
