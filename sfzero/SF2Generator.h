@@ -30,6 +30,7 @@ namespace sfzero
         {
 #include "sf2-chunks/generators.h"
         };
+        JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(SF2Generator)
     };
     
     const SF2Generator *GeneratorFor(int index);

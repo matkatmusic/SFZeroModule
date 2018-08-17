@@ -30,6 +30,7 @@ namespace sfzero
             word major;
             word minor;
             void readFrom(juce::InputStream& file);
+            JUCE_LEAK_DETECTOR(iver)
         };
         
         struct phdr
@@ -44,6 +45,7 @@ namespace sfzero
             void readFrom(juce::InputStream& file);
             
             static const int sizeInFile = 38;
+            JUCE_LEAK_DETECTOR(phdr)
         };
         
         struct pbag
@@ -53,6 +55,7 @@ namespace sfzero
             void readFrom(juce::InputStream& file);
             
             static const int sizeInFile = 4;
+            JUCE_LEAK_DETECTOR(pbag)
         };
         
         struct pmod
@@ -65,6 +68,7 @@ namespace sfzero
             void readFrom(juce::InputStream& file);
             
             static const int sizeInFile = 10;
+            JUCE_LEAK_DETECTOR(pmod)
         };
         
         struct pgen
@@ -75,6 +79,7 @@ namespace sfzero
             void readFrom(juce::InputStream& file);
             
             static const int sizeInFile = 4;
+            JUCE_LEAK_DETECTOR(pgen)
         };
         
         struct inst
@@ -84,6 +89,7 @@ namespace sfzero
             void readFrom(juce::InputStream& file);
             
             static const int sizeInFile = 22;
+            JUCE_LEAK_DETECTOR(inst)
         };
         
         struct ibag
@@ -94,6 +100,7 @@ namespace sfzero
             void readFrom(juce::InputStream& file);
             
             static const int sizeInFile = 4;
+            JUCE_LEAK_DETECTOR(ibag)
         };
         
         struct imod
@@ -107,6 +114,7 @@ namespace sfzero
             void readFrom(juce::InputStream& file);
             
             static const int sizeInFile = 10;
+            JUCE_LEAK_DETECTOR(imod)
         };
         
         struct igen
@@ -116,6 +124,7 @@ namespace sfzero
             void readFrom(juce::InputStream& file);
             
             static const int sizeInFile = 4;
+            JUCE_LEAK_DETECTOR(igen)
         };
         
         struct shdr
@@ -134,6 +143,7 @@ namespace sfzero
             void readFrom(juce::InputStream& file);
             
             static const int sizeInFile = 46;
+            JUCE_LEAK_DETECTOR(shdr)
         };
         
         struct Hydra
@@ -168,6 +178,7 @@ namespace sfzero
             
             void readFrom(juce::InputStream& file, juce::int64 pdtaChunkEnd);
             bool isComplete();
+            JUCE_LEAK_DETECTOR(Hydra)
         };
     }
 }

@@ -33,6 +33,7 @@ namespace sfzero
         
         ///converts the file into a String object.
         juce::String readString(juce::InputStream& file);
+        JUCE_LEAK_DETECTOR(RIFFChunk)
     };
 }
 

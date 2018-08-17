@@ -87,6 +87,7 @@ namespace sfzero
         EGParameters ampeg, ampeg_veltrack;
         
         static float timecents2Secs(int timecents);
+        JUCE_LEAK_DETECTOR(Region)
     };
 }
 

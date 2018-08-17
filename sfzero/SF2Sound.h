@@ -43,6 +43,7 @@ namespace sfzero
             {
                 regions.add( region.release() );
             }
+            JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(Preset)
         };
         //void addPreset(Preset *preset);
         void addPreset( std::unique_ptr<Preset> preset );
