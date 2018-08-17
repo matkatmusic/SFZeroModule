@@ -18,12 +18,15 @@ sfzero::SF2Sound::~SF2Sound()
     
     // The samples all share a single buffer, so make sure they don't all delete
     // it.
-    juce::AudioSampleBuffer *buffer = nullptr;
+    //juce::AudioSampleBuffer *buffer = nullptr;
+    std::shared_ptr<juce::AudioSampleBuffer> buffer;
+    
     for (juce::HashMap<int, sfzero::Sample *>::Iterator i(samplesByRate_); i.next();)
     {
         buffer = i.getValue()->detachBuffer();
     }
-    delete buffer;
+    //delete buffer;
+    buffer.reset();
 }
 
 class PresetComparator
@@ -57,7 +60,7 @@ void sfzero::SF2Sound::loadRegions()
 void sfzero::SF2Sound::loadSamples(juce::AudioFormatManager& /*formatManager*/, double *progressVar, juce::Thread *thread)
 {
     sfzero::SF2Reader reader(*this, getFile());
-    juce::AudioSampleBuffer *buffer = reader.readSamples(progressVar, thread);
+    auto buffer = reader.readSamples(progressVar, thread);
     
     if (buffer)
     {
@@ -118,7 +121,8 @@ sfzero::Sample *sfzero::SF2Sound::sampleFor(double sampleRate)
     return sample;
 }
 
-void sfzero::SF2Sound::setSamplesBuffer(juce::AudioSampleBuffer *buffer)
+//void sfzero::SF2Sound::setSamplesBuffer(juce::AudioSampleBuffer *buffer)
+void sfzero::SF2Sound::setSamplesBuffer(std::shared_ptr<juce::AudioSampleBuffer> buffer)
 {
     for (juce::HashMap<int, sfzero::Sample *>::Iterator i(samplesByRate_); i.next();)
     {

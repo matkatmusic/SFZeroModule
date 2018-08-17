@@ -55,7 +55,8 @@ namespace sfzero
         int selectedSubsound() override;
         
         Sample *sampleFor(double sampleRate);
-        void setSamplesBuffer(juce::AudioSampleBuffer *buffer);
+        //void setSamplesBuffer(juce::AudioSampleBuffer *buffer);
+        void setSamplesBuffer(std::shared_ptr<juce::AudioSampleBuffer> buffer);
         
     private:
         juce::OwnedArray<Preset> presets_;

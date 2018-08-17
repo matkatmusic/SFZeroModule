@@ -163,7 +163,8 @@ void sfzero::Voice::renderNextBlock(juce::AudioSampleBuffer &outputBuffer, int s
         return;
     }
     
-    juce::AudioSampleBuffer *buffer = region_->sample->getBuffer();
+    //juce::AudioSampleBuffer *buffer = region_->sample->getBuffer();
+    std::shared_ptr<juce::AudioSampleBuffer> buffer = region_->sample->getBuffer();
     const float *inL = buffer->getReadPointer(0, 0);
     const float *inR = buffer->getNumChannels() > 1 ? buffer->getReadPointer(1, 0) : nullptr;
     

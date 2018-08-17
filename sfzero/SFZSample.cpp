@@ -22,8 +22,9 @@ bool sfzero::Sample::load(juce::AudioFormatManager &formatManager)
     // can be done without having to check for the edge all the time.
     jassert(sampleLength_ < std::numeric_limits<int>::max());
     
-    buffer_ = new juce::AudioSampleBuffer(reader->numChannels, static_cast<int>(sampleLength_ + 4));
-    reader->read(buffer_, 0, static_cast<int>(sampleLength_ + 4), 0, true, true);
+    //buffer_ = new juce::AudioSampleBuffer(reader->numChannels, static_cast<int>(sampleLength_ + 4));
+    buffer_ = std::make_shared<juce::AudioSampleBuffer>(reader->numChannels, static_cast<int>(sampleLength_ + 4));
+    reader->read(buffer_.get(), 0, static_cast<int>(sampleLength_ + 4), 0, true, true);
     
     juce::StringPairArray *metadata = &reader->metadataValues;
     int numLoops = metadata->getValue("NumSampleLoops", "0").getIntValue();
@@ -40,7 +41,7 @@ bool sfzero::Sample::load(juce::AudioFormatManager &formatManager)
 
 juce::String sfzero::Sample::getShortName() { return (file_.getFileName()); }
 
-void sfzero::Sample::setBuffer(juce::AudioSampleBuffer *newBuffer)
+void sfzero::Sample::setBuffer(std::shared_ptr<juce::AudioSampleBuffer> newBuffer)
 {
     buffer_ = newBuffer;
     if( newBuffer )
@@ -53,12 +54,15 @@ void sfzero::Sample::setBuffer(juce::AudioSampleBuffer *newBuffer)
     }
 }
 
-juce::AudioSampleBuffer *sfzero::Sample::detachBuffer()
+std::shared_ptr<juce::AudioSampleBuffer> sfzero::Sample::detachBuffer()
 {
 //    juce::AudioSampleBuffer *result = buffer_;
 //    buffer_ = nullptr;
 //    return result;
-    return buffer_.release();
+//    return buffer_.release();
+    std::shared_ptr<juce::AudioSampleBuffer> local = buffer_;
+    buffer_.reset();
+    return local;
 }
 
 juce::String sfzero::Sample::getSampleFullPath()

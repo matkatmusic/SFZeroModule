@@ -8,15 +8,15 @@
 #define SFZSAMPLE_H_INCLUDED
 
 #include "SFZCommon.h"
-
+#include <memory>
 namespace sfzero
 {
     class Sample
     {
     public:
         explicit Sample(const juce::File &fileIn) :
-        file_(fileIn),
-        buffer_(nullptr)//,
+        file_(fileIn)//,
+        //buffer_(nullptr)//,
 //        sampleRate_(0),
 //        sampleLength_(0),
 //        loopStart_(0),
@@ -26,7 +26,7 @@ namespace sfzero
         }
         
         explicit Sample(double sampleRateIn) :
-        buffer_(nullptr),
+        //buffer_(nullptr),
         sampleRate_(sampleRateIn)//,
 //        sampleLength_(0),
 //        loopStart_(0),
@@ -39,11 +39,11 @@ namespace sfzero
         bool load(juce::AudioFormatManager &formatManager);
         
         juce::File getFile() { return (file_); }
-        juce::AudioSampleBuffer *getBuffer() { return (buffer_); }
+        std::shared_ptr<juce::AudioSampleBuffer> getBuffer() { return (buffer_); }
         double getSampleRate() { return (sampleRate_); }
         juce::String getShortName();
-        void setBuffer(juce::AudioSampleBuffer *newBuffer);
-        juce::AudioSampleBuffer *detachBuffer();
+        void setBuffer(std::shared_ptr<juce::AudioSampleBuffer> newBuffer);
+        std::shared_ptr<juce::AudioSampleBuffer> detachBuffer();
         
         ///returns the sample's full path name
         juce::String getSampleFullPath();
@@ -58,7 +58,7 @@ namespace sfzero
     private:
         juce::File file_;
         //juce::AudioSampleBuffer *buffer_;
-        juce::ScopedPointer<juce::AudioSampleBuffer> buffer_;
+        std::shared_ptr<juce::AudioSampleBuffer> buffer_ {nullptr};
         double sampleRate_{0};
         juce::uint64 sampleLength_{0}, loopStart_{0}, loopEnd_{0};
         

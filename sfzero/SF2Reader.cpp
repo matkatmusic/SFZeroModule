@@ -185,7 +185,7 @@ void sfzero::SF2Reader::read()
     }
 }
 
-std::unique_ptr<juce::AudioSampleBuffer> sfzero::SF2Reader::readSamples(double *progressVar, juce::Thread *thread)
+std::shared_ptr<juce::AudioSampleBuffer> sfzero::SF2Reader::readSamples(double *progressVar, juce::Thread *thread)
 {
     static const int bufferSize = 32768;
     
@@ -232,7 +232,7 @@ std::unique_ptr<juce::AudioSampleBuffer> sfzero::SF2Reader::readSamples(double *
     // Allocate the AudioSampleBuffer.
     int numSamples = chunk.size / sizeof(short);
     //juce::AudioSampleBuffer *sampleBuffer = new juce::AudioSampleBuffer(1, numSamples);
-    std::unique_ptr<juce::AudioSampleBuffer> sampleBuffer = std::make_unique<juce::AudioSampleBuffer>(1, numSamples);
+    std::shared_ptr<juce::AudioSampleBuffer> sampleBuffer = std::make_shared<juce::AudioSampleBuffer>(1, numSamples);
     
     // Read and convert.
     //short *buffer = new short[bufferSize];

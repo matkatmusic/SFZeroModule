@@ -24,7 +24,7 @@ namespace sfzero
         ///reads the file that was passed in 
         void read();
         //juce::AudioSampleBuffer* readSamples(double *progressVar = nullptr, juce::Thread *thread = nullptr);
-        std::unique_ptr<juce::AudioSampleBuffer> readSamples(double* progressVar = nullptr, juce::Thread* thread = nullptr);
+        std::shared_ptr<juce::AudioSampleBuffer> readSamples(double* progressVar = nullptr, juce::Thread* thread = nullptr);
         
     private:
         SF2Sound& sf2Sound;
