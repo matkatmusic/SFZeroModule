@@ -21,7 +21,8 @@ sfzero::SF2Sound::~SF2Sound()
     //juce::AudioSampleBuffer *buffer = nullptr;
     std::shared_ptr<juce::AudioSampleBuffer> buffer;
     
-    for (juce::HashMap<int, sfzero::Sample *>::Iterator i(samplesByRate_); i.next();)
+    //for (juce::HashMap<int, sfzero::Sample *>::Iterator i(samplesByRate_); i.next();)
+    for( juce::HashMap<int, std::shared_ptr<sfzero::Sample>>::Iterator i(samplesByRate_); i.next(); )
     {
         buffer = i.getValue()->detachBuffer();
     }
@@ -59,16 +60,22 @@ void sfzero::SF2Sound::loadRegions()
 
 void sfzero::SF2Sound::loadSamples(juce::AudioFormatManager& /*formatManager*/, double *progressVar, juce::Thread *thread)
 {
+    /*
+     each SF2Sound is given a File as the source of the actual sample data when they're created
+     this reader adds any errors encountered while reading to the SF2Sound object
+     
+     */
     sfzero::SF2Reader reader(*this, getFile());
     auto buffer = reader.readSamples(progressVar, thread);
     
     if (buffer)
     {
         // All the SFZSamples will share the buffer.
-        for (juce::HashMap<int, sfzero::Sample *>::Iterator i(samplesByRate_); i.next();)
-        {
-            i.getValue()->setBuffer(buffer);
-        }
+//        for (juce::HashMap<int, sfzero::Sample *>::Iterator i(samplesByRate_); i.next();)
+//        {
+//            i.getValue()->setBuffer(buffer);
+//        }
+        setSamplesBuffer( buffer );
     }
     
     if (progressVar)
@@ -109,13 +116,15 @@ void sfzero::SF2Sound::useSubsound(int whichSubsound)
 
 int sfzero::SF2Sound::selectedSubsound() { return selectedPreset_; }
 
-sfzero::Sample *sfzero::SF2Sound::sampleFor(double sampleRate)
+//sfzero::Sample *sfzero::SF2Sound::sampleFor(double sampleRate)
+std::shared_ptr<sfzero::Sample> sfzero::SF2Sound::sampleFor(double sampleRate)
 {
-    sfzero::Sample *sample = samplesByRate_[static_cast<int>(sampleRate)];
+    auto sample = samplesByRate_[static_cast<int>(sampleRate)];
     
     if (sample == nullptr)
     {
-        sample = new sfzero::Sample(sampleRate);
+        //sample = new sfzero::Sample(sampleRate);
+        sample = std::make_shared<sfzero::Sample>(sampleRate);
         samplesByRate_.set(static_cast<int>(sampleRate), sample);
     }
     return sample;
@@ -124,7 +133,8 @@ sfzero::Sample *sfzero::SF2Sound::sampleFor(double sampleRate)
 //void sfzero::SF2Sound::setSamplesBuffer(juce::AudioSampleBuffer *buffer)
 void sfzero::SF2Sound::setSamplesBuffer(std::shared_ptr<juce::AudioSampleBuffer> buffer)
 {
-    for (juce::HashMap<int, sfzero::Sample *>::Iterator i(samplesByRate_); i.next();)
+    //for (juce::HashMap<int, sfzero::Sample *>::Iterator i(samplesByRate_); i.next();)
+    for( juce::HashMap<int, std::shared_ptr<sfzero::Sample>>::Iterator i(samplesByRate_); i.next(); )
     {
         i.getValue()->setBuffer(buffer);
     }

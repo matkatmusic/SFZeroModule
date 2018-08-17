@@ -54,13 +54,17 @@ namespace sfzero
         void useSubsound(int whichSubsound) override;
         int selectedSubsound() override;
         
-        Sample *sampleFor(double sampleRate);
+        //Sample *sampleFor(double sampleRate);
+        std::shared_ptr<Sample> sampleFor(double sampleRate);
         //void setSamplesBuffer(juce::AudioSampleBuffer *buffer);
         void setSamplesBuffer(std::shared_ptr<juce::AudioSampleBuffer> buffer);
         
     private:
         juce::OwnedArray<Preset> presets_;
-        juce::HashMap<int, Sample *> samplesByRate_;
+        
+        //juce::HashMap<int, Sample *> samplesByRate_;
+        juce::HashMap<int, std::shared_ptr<Sample> > samplesByRate_;
+        
         int selectedPreset_;
         JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(SF2Sound)
     };

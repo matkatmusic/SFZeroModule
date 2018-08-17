@@ -136,7 +136,7 @@ void sfzero::SF2Reader::read()
                                     //sfzero::Region *newRegion = new sfzero::Region();
                                     auto newRegion = std::make_unique<sfzero::Region>();
                                     *newRegion = zoneRegion;
-                                    newRegion->sample = sf2Sound.sampleFor(shdr->sampleRate);
+                                    newRegion->sample = sf2Sound.sampleFor(shdr->sampleRate).get();
                                     preset->addRegion(std::move(newRegion));
                                     hadSampleID = true;
                                 }
