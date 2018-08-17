@@ -8,7 +8,7 @@
 #define SF2READER_H_INCLUDED
 
 #include "SF2.h"
-
+#include <memory>
 namespace sfzero
 {
     class SF2Sound;
@@ -23,7 +23,8 @@ namespace sfzero
         
         ///reads the file that was passed in 
         void read();
-        juce::AudioSampleBuffer* readSamples(double *progressVar = nullptr, juce::Thread *thread = nullptr);
+        //juce::AudioSampleBuffer* readSamples(double *progressVar = nullptr, juce::Thread *thread = nullptr);
+        std::unique_ptr<juce::AudioSampleBuffer> readSamples(double* progressVar = nullptr, juce::Thread* thread = nullptr);
         
     private:
         SF2Sound& sf2Sound;

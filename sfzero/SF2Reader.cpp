@@ -185,7 +185,7 @@ void sfzero::SF2Reader::read()
     }
 }
 
-juce::AudioSampleBuffer *sfzero::SF2Reader::readSamples(double *progressVar, juce::Thread *thread)
+std::unique_ptr<juce::AudioSampleBuffer> sfzero::SF2Reader::readSamples(double *progressVar, juce::Thread *thread)
 {
     static const int bufferSize = 32768;
     
@@ -231,10 +231,12 @@ juce::AudioSampleBuffer *sfzero::SF2Reader::readSamples(double *progressVar, juc
     
     // Allocate the AudioSampleBuffer.
     int numSamples = chunk.size / sizeof(short);
-    juce::AudioSampleBuffer *sampleBuffer = new juce::AudioSampleBuffer(1, numSamples);
+    //juce::AudioSampleBuffer *sampleBuffer = new juce::AudioSampleBuffer(1, numSamples);
+    std::unique_ptr<juce::AudioSampleBuffer> sampleBuffer = std::make_unique<juce::AudioSampleBuffer>(1, numSamples);
     
     // Read and convert.
-    short *buffer = new short[bufferSize];
+    //short *buffer = new short[bufferSize];
+    juce::HeapBlock<short> buffer(bufferSize);
     int samplesLeft = numSamples;
     float *out = sampleBuffer->getWritePointer(0);
     while (samplesLeft > 0)
@@ -245,11 +247,11 @@ juce::AudioSampleBuffer *sfzero::SF2Reader::readSamples(double *progressVar, juc
         {
             samplesToRead = samplesLeft;
         }
-        fileInputStream->read(buffer, samplesToRead * sizeof(short));
+        fileInputStream->read(buffer.getData(), samplesToRead * sizeof(short));
         
         // Convert from signed 16-bit to float.
         int samplesToConvert = samplesToRead;
-        short *in = buffer;
+        short *in = buffer.getData();
         for (; samplesToConvert > 0; --samplesToConvert)
         {
             // If we ever need to compile for big-endian platforms, we'll need to
@@ -265,12 +267,13 @@ juce::AudioSampleBuffer *sfzero::SF2Reader::readSamples(double *progressVar, juc
         }
         if (thread && thread->threadShouldExit())
         {
-            delete[] buffer;
-            delete sampleBuffer;
+            //delete[] buffer;
+            //delete sampleBuffer;
+            sampleBuffer.reset();
             return nullptr;
         }
     }
-    delete[] buffer;
+    //delete[] buffer;
     
     if (progressVar)
     {
