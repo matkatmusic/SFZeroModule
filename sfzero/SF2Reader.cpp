@@ -230,7 +230,7 @@ std::shared_ptr<juce::AudioSampleBuffer> sfzero::SF2Reader::readSamples(double *
     }
     
     // Allocate the AudioSampleBuffer.
-    int numSamples = chunk.size / sizeof(short);
+    int numSamples = (int)chunk.size / sizeof(short);
     //juce::AudioSampleBuffer *sampleBuffer = new juce::AudioSampleBuffer(1, numSamples);
     std::shared_ptr<juce::AudioSampleBuffer> sampleBuffer = std::make_shared<juce::AudioSampleBuffer>(1, numSamples);
     

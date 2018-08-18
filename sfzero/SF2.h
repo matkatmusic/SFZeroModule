@@ -163,7 +163,7 @@ namespace sfzero
                             std::vector<T>& chunkItems,
                             juce::InputStream& file)
             {
-                int numItems = chunk.size / T::sizeInFile;
+                int numItems = (int)chunk.size / T::sizeInFile;
                 for( int i = 0; i < numItems; ++i )
                 {
                     T t;
