@@ -241,7 +241,7 @@ std::shared_ptr<juce::AudioSampleBuffer> sfzero::SF2Reader::readSamples(double *
     float *out = sampleBuffer->getWritePointer(0);
     while (samplesLeft > 0)
     {
-        // Read the buffer.
+        // Read <= 32768 bytes at a time from the buffer
         int samplesToRead = bufferSize;
         if (samplesToRead > samplesLeft)
         {
@@ -257,6 +257,7 @@ std::shared_ptr<juce::AudioSampleBuffer> sfzero::SF2Reader::readSamples(double *
             // If we ever need to compile for big-endian platforms, we'll need to
             // byte-swap here.
             *out++ = *in++ / 32767.0f;
+
         }
         
         samplesLeft -= samplesToRead;
