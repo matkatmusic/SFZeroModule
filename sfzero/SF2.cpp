@@ -115,7 +115,7 @@ void sfzero::SF2::Hydra::readFrom(juce::InputStream& file, juce::int64 pdtaChunk
         
         if( check(chunk, phdrType ) )
         {
-            readHelper(chunk, phdrItems, file);
+            readHelper(chunk, presetHeaderList, file);
         }
         else if( check(chunk, pbagType ) )
         {
@@ -157,7 +157,7 @@ void sfzero::SF2::Hydra::readFrom(juce::InputStream& file, juce::int64 pdtaChunk
 bool sfzero::SF2::Hydra::isComplete()
 {
     return
-    !phdrItems.empty() &&
+    !presetHeaderList.empty() &&
     !pbagItems.empty() &&
     !pmodItems.empty() &&
     !pgenItems.empty() &&

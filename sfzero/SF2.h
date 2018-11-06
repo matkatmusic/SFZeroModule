@@ -148,7 +148,7 @@ namespace sfzero
         
         struct Hydra
         {
-            std::vector<phdr> phdrItems;
+            std::vector<phdr> presetHeaderList;
             std::vector<pbag> pbagItems;
             std::vector<pmod> pmodItems;
             std::vector<pgen> pgenItems;

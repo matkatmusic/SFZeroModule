@@ -53,31 +53,33 @@ void sfzero::SF2Reader::read()
     
     // Read each preset.
     //for (int whichPreset = 0; whichPreset < hydra.phdrNumItems - 1; ++whichPreset)
-    for( int whichPreset = 0; whichPreset < hydra.phdrItems.size() - 1; ++whichPreset)
+    for( int whichPreset = 0; whichPreset < hydra.presetHeaderList.size() - 1; ++whichPreset)
     {
-        sfzero::SF2::phdr *phdr = &hydra.phdrItems[whichPreset];
+        sfzero::SF2::phdr *presetHeader = &hydra.presetHeaderList[whichPreset];
         //sfzero::SF2Sound::Preset *preset = new sfzero::SF2Sound::Preset(phdr->presetName, phdr->bank, phdr->preset);
-        auto preset = std::make_unique<sfzero::SF2Sound::Preset>(phdr->presetName, phdr->bank, phdr->preset);
+        auto preset = std::make_unique<sfzero::SF2Sound::Preset>(presetHeader->presetName,
+                                                                 presetHeader->bank,
+                                                                 presetHeader->preset);
         
         // Zones.
         //*** TODO: Handle global zone (modulators only).
-        int zoneEnd = phdr[1].presetBagNdx;
-        for (int whichZone = phdr->presetBagNdx; whichZone < zoneEnd; ++whichZone)
+        int zoneEnd = hydra.presetHeaderList[whichPreset+1].presetBagNdx;
+        for (int whichZone = presetHeader->presetBagNdx; whichZone < zoneEnd; ++whichZone)
         {
-            sfzero::SF2::pbag *pbag = &hydra.pbagItems[whichZone];
+            sfzero::SF2::pbag *presetZone = &hydra.pbagItems[whichZone];
             sfzero::Region presetRegion;
             presetRegion.clearForRelativeSF2();
             
             // Generators.
-            int genEnd = pbag[1].genNdx;
-            for (int whichGen = pbag->genNdx; whichGen < genEnd; ++whichGen)
+            int genEnd = hydra.pbagItems[whichZone+1].genNdx;
+            for (int whichGen = presetZone->genNdx; whichGen < genEnd; ++whichGen)
             {
-                sfzero::SF2::pgen *pgen = &hydra.pgenItems[whichGen];
+                sfzero::SF2::pgen *presetGenerator = &hydra.pgenItems[whichGen];
                 
                 // Instrument.
-                if (pgen->genOper == sfzero::SF2Generator::instrument)
+                if (presetGenerator->genOper == sfzero::SF2Generator::instrument)
                 {
-                    sfzero::word whichInst = pgen->genAmount.wordAmount;
+                    sfzero::word whichInst = presetGenerator->genAmount.wordAmount;
                     //if (whichInst < hydra.instNumItems)
                     if( whichInst < hydra.instItems.size() )
                     {
@@ -169,13 +171,13 @@ void sfzero::SF2Reader::read()
                 // Other generators.
                 else
                 {
-                    addGeneratorToRegion(pgen->genOper, &pgen->genAmount, &presetRegion);
+                    addGeneratorToRegion(presetGenerator->genOper, &presetGenerator->genAmount, &presetRegion);
                 }
             }
             
             // Modulators.
-            int modEnd = pbag[1].modNdx;
-            int whichMod = pbag->modNdx;
+            int modEnd = presetZone[1].modNdx;
+            int whichMod = presetZone->modNdx;
             if (whichMod < modEnd)
             {
                 sf2Sound.addUnsupportedOpcode("any modulator");
